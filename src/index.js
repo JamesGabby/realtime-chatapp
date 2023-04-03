@@ -5,6 +5,7 @@ const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationURL } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
+const { addRoom, getRooms } = require('./utils/rooms')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,21 +20,28 @@ app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
   console.log('New WebSocket connection')
-
   socket.on('join', (options, callback) => {
-    const { error, user } = addUser({ id: socket.id, ...options })
+    const { userError, user } = addUser({ id: socket.id, ...options })
+    const { room } = addRoom({ roomName: user.room })
 
-    if (error) {
-      return callback(error)
+    if (userError) {
+      return callback(userError)
     }
 
     socket.join(user.room)
 
     socket.emit('message', generateMessage('Welcome!', admin))
+
     socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`, admin))
+
     io.to(user.room).emit('roomData', {
       room: user.room,
       users: getUsersInRoom(user.room)
+    })
+
+    io.emit('activeRooms', {
+      rooms: getRooms(),
+      roomCount: getRooms().length
     })
 
     callback()
