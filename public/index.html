@@ -22,9 +22,9 @@
 
     <script id="active-rooms-template" type="text/html">
       <label>{{roomCount}} Active Rooms</label>
-      <select class="users">
+      <select class="users" id="active-rooms-dropdown">
         {{#rooms}}
-          <option>{{roomName}}</option>
+          <option value="{{roomName}}">{{name}}</option>
         {{/rooms}}
       </select>
     </script>

@@ -1,28 +1,39 @@
 const rooms = []
 
-const addRoom = ({ roomName }) => {
-  const existingRoom = rooms.find((currentRoom) => {
-    return currentRoom === roomName
-  })
+const addRoom = ({ room }) => {
+  const findRoom = rooms.find((liveRoom) => liveRoom.name === room)
 
-  if (existingRoom) {
-    return {
-      error: 'Room exists!'
-    }
+  if (findRoom) {
+    findRoom.number++
+    return rooms
   }
 
-  const room = { roomName }
+  rooms.push({ name: room, number: 1 })
 
-  rooms.push(room)
-
-  return { room }
+  return rooms
 }
 
-const getRooms = () => {
+const recountRoom = (room) => {
+  const findRoom = rooms.find((liveRoom) => liveRoom.name === room);
+
+  findRoom.number--
+
+  if(findRoom.number === 0) {
+    index = rooms.indexOf(findRoom)
+    rooms.splice(index, 1)
+
+    return rooms
+  }
+
+  return rooms
+};
+
+getRooms = () => {
   return rooms
 }
 
 module.exports = {
   addRoom,
+  recountRoom,
   getRooms
 }
