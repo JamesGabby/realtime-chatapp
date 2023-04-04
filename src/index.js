@@ -5,7 +5,7 @@ const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationURL } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
-const { addRoom, recountRoom, getRooms } = require('./utils/rooms')
+const { addRoom, getRooms } = require('./utils/rooms')
 
 const app = express()
 const server = http.createServer(app)
@@ -20,11 +20,16 @@ app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
   console.log('New WebSocket connection')
-  io.emit('currentRooms', getRooms())
 
   socket.on('join', ({ username, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, room })
 
+    let foundRoom = getRooms().find((r) => r.room === room)
+
+    if (!foundRoom) {
+      addRoom({ room })
+    }
+    
     if (error) {
       return callback(error)
     }
@@ -41,11 +46,8 @@ io.on('connection', (socket) => {
     })
 
     io.emit('activeRooms', {
-      rooms: getRooms(),
-      roomCount: getRooms().length
+      rooms: getRooms()
     })
-
-    io.emit('currentRooms', addRoom({ room }))
 
     callback()
   })
@@ -74,7 +76,6 @@ io.on('connection', (socket) => {
     const user = getUser(socket.id)
 
     if (user) {
-      io.emit('currentRooms', recountRoom(user.room))
       io.to(user.room).emit('message', generateMessage(`${user.username} has left`, admin))
       io.to(user.room).emit('roomData', {
         room: user.room,
