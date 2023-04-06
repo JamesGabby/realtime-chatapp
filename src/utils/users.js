@@ -4,7 +4,7 @@ const addUser = ({ id, username, room }) => {
   username = username.trim().toLowerCase()
   room = room.trim().toLowerCase()
 
-  if (!username || !room) {
+  if (!username) {
     return {
       error: 'Username and room are required!'
     }

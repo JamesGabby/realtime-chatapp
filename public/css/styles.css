@@ -56,12 +56,17 @@ button:disabled {
     background: #7c5cbf94;
 }
 
+select {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
 /* Join Page Styles */
 
 .centered-form {
     background: #333744;
     width: 100vw;
-    height: 100vh;   
+    height: 50vh;   
     display: flex;
     justify-content: center;
     align-items: center;

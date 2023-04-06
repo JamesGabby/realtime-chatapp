@@ -20,9 +20,7 @@ const autoscroll = () => {
   const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
 
   const visibleHeight = $messages.offsetHeight
-
   const containerHeight = $messages.scrollHeight
-
   const scrollOffset = $messages.scrollTop + visibleHeight
 
   if (Math.round(containerHeight - newMessageHeight) <= Math.round(scrollOffset)) {
@@ -50,7 +48,7 @@ socket.on('locationMessage', (message) => {
   autoscroll()
 })
 
-socket.on('roomData', ({ room, users }) => {
+socket.on('roomData', ({ room, users }) => { 
   const html = Mustache.render(sideBarTemplate, {
     room,
     users
@@ -60,9 +58,7 @@ socket.on('roomData', ({ room, users }) => {
 
 $messageForm.addEventListener('submit', (e) => {
   e.preventDefault()
-
   $messageFormButton.setAttribute('disabled', 'disabled')
-
   const message = e.target.elements.message.value
 
   socket.emit('sendMessage', message, (error) => {
@@ -76,8 +72,6 @@ $messageForm.addEventListener('submit', (e) => {
 
     console.log('Message delivered!')
   })
-
-  
 })
 
 $sendLocationButton.addEventListener('click', () => {

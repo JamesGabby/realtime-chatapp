@@ -1,7 +1,25 @@
+const { getUsersInRoom } = require('./users')
+
 const rooms = []
 
 const addRoom = ({ room }) => {
-  rooms.push({ room })
+  const foundRoom = rooms.find(r => r.room === room)
+
+  if (!foundRoom) {
+    rooms.push({ room }) 
+  }
+}
+
+const removeRoomIfNoUsers = (room) => {
+  const users = getUsersInRoom(room)
+
+  if (users.length === '') {
+    const index = rooms.findIndex(r => r.room === room)
+
+    if (index !== -1) {
+      return rooms.splice(index, 1)
+    }
+  }
 }
 
 const getRooms = () => {
@@ -10,5 +28,6 @@ const getRooms = () => {
 
 module.exports = {
   addRoom,
-  getRooms
+  getRooms,
+  removeRoomIfNoUsers
 }

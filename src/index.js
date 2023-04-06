@@ -5,7 +5,7 @@ const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationURL } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
-const { addRoom, getRooms } = require('./utils/rooms')
+const { addRoom, removeRoomIfNoUsers, getRooms } = require('./utils/rooms')
 
 const app = express()
 const server = http.createServer(app)
@@ -24,11 +24,7 @@ io.on('connection', (socket) => {
   socket.on('join', ({ username, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, room })
 
-    let foundRoom = getRooms().find((r) => r.room === room)
-
-    if (!foundRoom) {
-      addRoom({ room })
-    }
+    addRoom({ room })
     
     if (error) {
       return callback(error)
@@ -76,6 +72,7 @@ io.on('connection', (socket) => {
     const user = getUser(socket.id)
 
     if (user) {
+      removeRoomIfNoUsers(user.room)
       io.to(user.room).emit('message', generateMessage(`${user.username} has left`, admin))
       io.to(user.room).emit('roomData', {
         room: user.room,
