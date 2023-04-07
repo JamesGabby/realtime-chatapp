@@ -6,6 +6,5 @@ socket.on('activeRooms', ({ rooms }) => {
   const html = Mustache.render(activeRoomsTemplate, {
     rooms
   })
-
   document.querySelector('#active-rooms').innerHTML = html
 })
