@@ -10,10 +10,10 @@ const addRoom = ({ room }) => {
   }
 }
 
-const removeRoomIfNoUsers = (room) => {
+const removeRoomIfEmpty = (room) => {
   const users = getUsersInRoom(room)
 
-  if (users.length === '') {
+  if (users.length === 1) {
     const index = rooms.findIndex(r => r.room === room)
 
     if (index !== -1) {
@@ -29,5 +29,5 @@ const getRooms = () => {
 module.exports = {
   addRoom,
   getRooms,
-  removeRoomIfNoUsers
+  removeRoomIfEmpty
 }

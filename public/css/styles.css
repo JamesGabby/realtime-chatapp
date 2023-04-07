@@ -59,6 +59,11 @@ button:disabled {
 select {
   margin-bottom: 16px;
   width: 100%;
+  font-size: 14px;
+}
+
+option {
+  margin: 10px;
 }
 
 /* Join Page Styles */
